@@ -23,9 +23,6 @@ def lambda_handler(event, context):
 
     table_names = get_tables_to_process()
     for table_name in table_names:
-        table_id = f"{project_id}.{dataset_id}.{table_name}"
-        table = bigquery.Table(table_id, get_table_schema(table_name))
-        client.create_table(table)
         try:
             table_ref = dataset_ref.table(table_name)
             table = client.get_table(table_ref)
@@ -55,7 +52,7 @@ def lambda_handler(event, context):
             "Loaded {} rows into {}:{}.".format(job.output_rows, dataset_id, table_name)
         )
 
-    return {"statusCode": 200, "body": json.dumps("all done!")}
+    return {"statusCode": 200, "body": "All done!"}
 
 
 def get_table_schema(table_name):
