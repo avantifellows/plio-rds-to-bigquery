@@ -115,6 +115,7 @@ def get_tables_in_schema(schema='public'):
     ]
 
 def process_tables_in_schema(client, dataset_ref, schema):
+    """Processes tables in the specified schema."""
     bucket_name = os.getenv("BUCKET_NAME")
     s3_directory = os.getenv("S3_DIRECTORY")
     project_id = os.getenv("PROJECT_ID")
@@ -139,6 +140,7 @@ def process_tables_in_schema(client, dataset_ref, schema):
         local_file_name = "/tmp/" + table_name + ".csv"
         s3.download_file(bucket_name, file, local_file_name)
 
+        # bigquery transfer job configurations
         job_config = bigquery.LoadJobConfig()
         job_config.source_format = bigquery.SourceFormat.CSV
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
