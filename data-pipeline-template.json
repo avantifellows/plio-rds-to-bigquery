@@ -549,7 +549,7 @@
         },
         "resourceRole": "DataPipelineDefaultResourceRole",
         "role": "DataPipelineDefaultRole",
-        "pipelineLogUri": "s3://plio-datapipeline-logs/staging/public",
+        "pipelineLogUri": "s3://logs_bucket_name/directory/structure",
         "scheduleType": "cron",
         "name": "Default",
         "id": "Default"
