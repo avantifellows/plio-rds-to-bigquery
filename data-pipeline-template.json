@@ -1,0 +1,748 @@
+{
+    "objects": [
+      {
+        "output": {
+          "ref": "S3DataNodeId_FATZv"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_55Lvj"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_session_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_JWMnT",
+        "type": "CopyActivity"
+      },
+      {
+        "instanceType": "#{myEC2InstanceType}",
+        "name": "Ec2Instance",
+        "actionOnTaskFailure": "terminate",
+        "securityGroups": "#{myEc2RdsSecurityGrps}",
+        "id": "Ec2Instance",
+        "type": "Ec2Resource",
+        "region": "#{myRDSRegion}",
+        "terminateAfter": "2 Hours"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_NtDta"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_1Vrp9"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_experiment_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_DDBLl",
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/organization_user.csv",
+        "name": "organization_user.csv",
+        "id": "S3DataNodeId_LUsxm",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "question_table",
+        "id": "SqlDataNodeId_Hl9bF",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "question",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_m9ZcZ"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_77eap"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_plio_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_ssalW",
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "item_table",
+        "id": "SqlDataNodeId_iwDBg",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "item",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/session_answer.csv",
+        "name": "session_answer.csv",
+        "id": "S3DataNodeId_U6kN2",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/item.csv",
+        "name": "item.csv",
+        "id": "S3DataNodeId_LiL3e",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "experiment_table",
+        "id": "SqlDataNodeId_1Vrp9",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "selectQuery": "select * from #{schemaName}.#{table}",
+        "table": "experiment"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_iaCYb"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_6aAc6"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_organization_table",
+        "id": "CopyActivityId_KIaT3",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "organization_user_table",
+        "id": "SqlDataNodeId_6fTDg",
+        "type": "SqlDataNode",
+        "schemaName": "public",
+        "table": "organization_user",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "video_table",
+        "id": "SqlDataNodeId_zC38D",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "video",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/question.csv",
+        "name": "question.csv",
+        "id": "S3DataNodeId_elzys",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/model_has_tag.csv",
+        "name": "model_has_tag.csv",
+        "id": "S3DataNodeId_yADR2",
+        "type": "S3DataNode"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_zezs5"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_pPvGH"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_event_table",
+        "id": "CopyActivityId_jrrAu",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "model_has_tag_table",
+        "id": "SqlDataNodeId_y7uUQ",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "selectQuery": "select * from #{schemaName}.#{table}",
+        "table": "model_has_tag"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "plio_table",
+        "id": "SqlDataNodeId_77eap",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "plio",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/user_meta.csv",
+        "name": "user_meta.csv",
+        "id": "S3DataNodeId_dETHs",
+        "type": "S3DataNode"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_mU8Lm"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_qpzBu"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_tag_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_GIeaj",
+        "type": "CopyActivity"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_elzys"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_Hl9bF"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_question_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_qq3ca",
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/session.csv",
+        "name": "session.csv",
+        "id": "S3DataNodeId_FATZv",
+        "type": "S3DataNode"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_kcvVe"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_u48a9"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_role_table",
+        "id": "CopyActivityId_gGDBb",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/experiment.csv",
+        "name": "experiment.csv",
+        "id": "S3DataNodeId_NtDta",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "user_table",
+        "id": "SqlDataNodeId_RYdnf",
+        "type": "SqlDataNode",
+        "schemaName": "public",
+        "table": "user",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "period": "1 hours",
+        "name": "Every 1 hour",
+        "id": "DefaultSchedule",
+        "type": "Schedule",
+        "startAt": "FIRST_ACTIVATION_DATE_TIME"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/role.csv",
+        "name": "role.csv",
+        "id": "S3DataNodeId_kcvVe",
+        "type": "S3DataNode"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_vtTxE"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_uaneD"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_experiment_plio_table",
+        "id": "CopyActivityId_iDmc4",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/video.csv",
+        "name": "video.csv",
+        "id": "S3DataNodeId_vRHri",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "tag_table",
+        "id": "SqlDataNodeId_qpzBu",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "tag",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_l4eQW"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_RYdnf"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_user_table",
+        "id": "CopyActivityId_kXkNj",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_LUsxm"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_6fTDg"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_organization_user_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_hBbQI",
+        "type": "CopyActivity"
+      },
+      {
+        "databaseName": "#{myRDSDBName}",
+        "*password": "#{*myRDSPassword}",
+        "name": "rds_mysql",
+        "jdbcProperties": "allowMultiQueries=true",
+        "id": "rds_mysql",
+        "region": "#{myRDSRegion}",
+        "type": "RdsDatabase",
+        "rdsInstanceId": "#{myRDSInstanceId}",
+        "username": "#{myRDSUsername}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "event_table",
+        "id": "SqlDataNodeId_pPvGH",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "event",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_LiL3e"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_iwDBg"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_item_table",
+        "id": "CopyActivityId_HkySk",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_dETHs"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_OWbjv"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_user_meta_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_WqEpm",
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/experiment_plio.csv",
+        "name": "experiment_plio.csv",
+        "id": "S3DataNodeId_vtTxE",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "user_meta_table",
+        "id": "SqlDataNodeId_OWbjv",
+        "type": "SqlDataNode",
+        "schemaName": "public",
+        "table": "user_meta",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "organization_table",
+        "id": "SqlDataNodeId_6aAc6",
+        "type": "SqlDataNode",
+        "schemaName": "public",
+        "table": "organization",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/organization.csv",
+        "name": "organization.csv",
+        "id": "S3DataNodeId_iaCYb",
+        "type": "S3DataNode"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_yADR2"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_y7uUQ"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_model_has_tag_table",
+        "id": "CopyActivityId_Wp6Vc",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "failureAndRerunMode": "CASCADE",
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "resourceRole": "DataPipelineDefaultResourceRole",
+        "role": "DataPipelineDefaultRole",
+        "pipelineLogUri": "s3://plio-datapipeline-logs/staging/public",
+        "scheduleType": "cron",
+        "name": "Default",
+        "id": "Default"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_vRHri"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_zC38D"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_video_table",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "id": "CopyActivityId_JS4ig",
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "session_answer_table",
+        "id": "SqlDataNodeId_qxx5a",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "session_answer",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "role_table",
+        "id": "SqlDataNodeId_u48a9",
+        "type": "SqlDataNode",
+        "schemaName": "public",
+        "table": "role",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/event.csv",
+        "name": "event.csv",
+        "id": "S3DataNodeId_zezs5",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "experiment_plio_table",
+        "id": "SqlDataNodeId_uaneD",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "selectQuery": "select * from #{schemaName}.#{table}",
+        "table": "experiment_plio"
+      },
+      {
+        "output": {
+          "ref": "S3DataNodeId_U6kN2"
+        },
+        "input": {
+          "ref": "SqlDataNodeId_qxx5a"
+        },
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "name": "copy_session_answer_table",
+        "id": "CopyActivityId_PDLuQ",
+        "runsOn": {
+          "ref": "Ec2Instance"
+        },
+        "type": "CopyActivity"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/user.csv",
+        "name": "user.csv",
+        "id": "S3DataNodeId_l4eQW",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/plio.csv",
+        "name": "plio.csv",
+        "id": "S3DataNodeId_m9ZcZ",
+        "type": "S3DataNode"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "database": {
+          "ref": "rds_mysql"
+        },
+        "name": "session_table",
+        "id": "SqlDataNodeId_55Lvj",
+        "schemaName": "#{myRDSSchema}",
+        "type": "SqlDataNode",
+        "table": "session",
+        "selectQuery": "select * from #{schemaName}.#{table}"
+      },
+      {
+        "schedule": {
+          "ref": "DefaultSchedule"
+        },
+        "filePath": "#{myOutputS3Loc}/tag.csv",
+        "name": "tag.csv",
+        "id": "S3DataNodeId_mU8Lm",
+        "type": "S3DataNode"
+      }
+    ],
+    "parameters": [
+      {
+        "default": "t2.micro",
+        "helpText": "The type of the EC2 instance that will be launched on your behalf to do the copy",
+        "description": "EC2 instance type",
+        "id": "myEC2InstanceType",
+        "type": "String"
+      },
+      {
+        "watermark": "DB Instance",
+        "description": "RDS Instance ID",
+        "id": "myRDSInstanceId",
+        "type": "String"
+      },
+      {
+        "description": "RDS Postgres database name",
+        "id": "myRDSDBName",
+        "type": "String"
+      },
+      {
+        "description": "RDS Postgres username",
+        "id": "myRDSUsername",
+        "type": "String"
+      },
+      {
+        "description": "RDS Postgres password",
+        "id": "*myRDSPassword",
+        "type": "String"
+      },
+      {
+        "description": "RDS region",
+        "id": "myRDSRegion",
+        "type": "String"
+      },
+      {
+        "description": "RDS database schema name",
+        "id": "myRDSSchema",
+        "type": "String"
+      },
+      {
+        "watermark": "security group name",
+        "helpText": "The names of one or more EC2 security groups that have access to the RDS cluster.",
+        "description": "Ec2 Security group(s)",
+        "isArray": "true",
+        "optional": "true",
+        "id": "myEc2RdsSecurityGrps",
+        "type": "String"
+      },
+      {
+        "description": "Output S3 folder",
+        "id": "myOutputS3Loc",
+        "type": "AWS::S3::ObjectKey"
+      }
+    ],
+    "values": {
+      "myEC2InstanceType": "t2.micro",
+      "myRDSInstanceId": "rds_instance_id",
+      "myRDSDBName": "rds_database_name",
+      "myRDSUsername": "rds_username",
+      "*myRDSPassword": "rds_database_password",
+      "myRDSRegion": "rds_region",
+      "myRDSSchema": "rds_database_schema",
+      "myOutputS3Loc": "s3://bucket_name/directory/structure"
+    }
+  }

@@ -9,8 +9,8 @@ from google.cloud.exceptions import NotFound
 def lambda_handler(event, context):
     """The main handler function. """
     # load env variables
-    project_id = os.getenv("PROJECT_ID")
-    dataset_id = os.getenv("DATASET_ID")
+    project_id = os.getenv("BIGQUERY_PROJECT_ID")
+    dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     bigquery_region = os.getenv("BIGQUERY_REGION")
 
     client = bigquery.Client(project=project_id, location=bigquery_region)
@@ -116,10 +116,10 @@ def get_tables_in_schema(schema='public'):
 
 def process_tables_in_schema(client, dataset_ref, schema):
     """Processes tables in the specified schema."""
-    bucket_name = os.getenv("BUCKET_NAME")
-    s3_directory = os.getenv("S3_DIRECTORY")
-    project_id = os.getenv("PROJECT_ID")
-    dataset_id = os.getenv("DATASET_ID")
+    bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_directory = os.getenv("S3_DIRECTORY", '')
+    project_id = os.getenv("BIGQUERY_PROJECT_ID")
+    dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     s3 = boto3.client("s3")
 
     # get tables in public schema
