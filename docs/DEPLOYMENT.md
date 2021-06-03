@@ -80,4 +80,4 @@ cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.
     10. GOOGLE_APPLICATION_CREDENTIALS
     11. S3_BUCKET_NAME
     12. S3_DIRECTORY
-12. Try testing the lambda function by switching to the "Test" tab and click on "Test" button. If everything goes well, you should see a green box with 200 status.
+12. Try testing the lambda function by switching to the "Test" tab and click on "Test" button. If everything goes well, you should see a green box with 200 statusCode.
