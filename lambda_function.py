@@ -23,12 +23,14 @@ def lambda_handler(event, context):
         client.create_dataset(dataset_id)
 
     # process tables in public schema
-    process_tables_in_schema(client, dataset_ref, 'public')
+    table_names = get_tables_in_schema(public_mode=True)
+    process_tables(client, dataset_ref, 'public', table_names)
 
     # process tables in organization schema
     schema = os.getenv("DB_SCHEMA_NAME", None)
+    table_names = get_tables_in_schema(public_mode=False)
     if schema is not None:
-        process_tables_in_schema(client, dataset_ref, schema)
+        process_tables(client, dataset_ref, schema, table_names)
 
     return {"statusCode": 200, "body": "All done!"}
 
@@ -89,9 +91,9 @@ def map_to_big_query_data_type(column_type):
         return "TIME"
 
 
-def get_tables_in_schema(schema='public'):
+def get_tables_in_schema(public_mode=True):
     """List of organization tables that need to be processed."""
-    if schema == 'public':
+    if public_mode:
         return [
             "organization",
             "organization_user",
@@ -114,16 +116,13 @@ def get_tables_in_schema(schema='public'):
         "video"
     ]
 
-def process_tables_in_schema(client, dataset_ref, schema):
+def process_tables(client, dataset_ref, schema, table_names):
     """Processes tables in the specified schema."""
     bucket_name = os.getenv("S3_BUCKET_NAME")
     s3_directory = os.getenv("S3_DIRECTORY", '')
     project_id = os.getenv("BIGQUERY_PROJECT_ID")
     dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     s3 = boto3.client("s3")
-
-    # get tables in public schema
-    table_names = get_tables_in_schema(schema)
 
     for table_name in table_names:
         try:
