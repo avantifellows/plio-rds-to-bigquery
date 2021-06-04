@@ -5,19 +5,19 @@ This document covers transferring your data from an Amazon's RDS Postgres databa
 The setup and deploy process involves an understanding of various tools:
 1. AWS RDS
 2. AWS Datapipeline
-3. AWS SNS
-4. AWS Lambda
-5. AWS S3
+3. AWS Lambda
+4. AWS S3
+5. AWS Cloudwatch event/rules
 6. Google BigQuery
 
 ### High level architecture
 Here's a high level flow diagram of how data is transferred from RDS to BigQuery. Use the diagram further below to understand the points visually.
 1. RDS stores the active data records
 2. AWS Data pipeline works as an ETL layer to "extract, transform and load" data into CSV formats and then put it in an S3 bucket. The ETL process runs on an EC2 instance that is managed within the data pipeline configurations.
-3. Once the data pipeline executes, it triggers a Lambda function using SNS.
-4. The Lambda function reads the CSV files from S3 and then uses a Google Cloud Python API client to push data into BigQuery.
+3. A lambda function reads the CSV files from S3 and then uses a Google Cloud Python API client to push data into BigQuery.
+4. The lambda function is invoked on an hourly basis using Cloudwatch event-rule.
 
--- diagram
+![Overview of RDS to BigQuery flow](images/rds-to-bigquery-flow.png)
 
 ## Deployment steps
 
@@ -48,10 +48,6 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 5. Next, create a service account for your GCP account. Grant the BigQuery admin permission to the service account.
 6. Download the service account credentials file and rename it to `gcp-service-account.json`.
 7. Copy the GCP service account credentials file to the project folder.
-
-### Set up SNS trigger
-To do.
-
 ### Set up Lambda
 1. Go to your AWS dashboard and from services, select `Lambda`.
 2. Click on "Create function" button.
@@ -81,3 +77,15 @@ cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.
     11. S3_BUCKET_NAME
     12. S3_DIRECTORY
 12. Try testing the lambda function by switching to the "Test" tab and click on "Test" button. If everything goes well, you should see a green box with 200 statusCode.
+
+### Set up Cloudwatch Rule to trigger lambda
+1.  Go to `Cloudwatch` dashboard and navigate to `Events > Rules` tab.
+2.  Click on "Create rule" button.
+3.  Enter the name of the rule. An example can be `plio_lambda_run_every_hour`
+4.  Enter description for your rule.
+5.  Under "Define Pattern" section, click on `Schedule` option.
+6.  Select `Fixed rate every`. Set the value to `1` and `Hours` in the unit dropdown.
+7.  Go to select targets section and select `Lambda function` from the available options.
+8.  Select your lambda function in the next dropdown.
+9.  Create the rule.
+10. The lambda is now automated to run every hour.
