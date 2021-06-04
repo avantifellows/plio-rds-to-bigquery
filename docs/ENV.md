@@ -11,10 +11,10 @@ The name of your dataset. You can check this by right-clicking on your dataset a
 **Note:** Do NOT use fully qualified name like `project-id:dataset-id`. Only the part after colon is needed.
 
 #### `BIGQUERY_REGION`
-The region of your bigquery setup in Google Cloud Console. You can check this from the dataset info section mentioned above.
+The region of your bigquery setup in Google Cloud Console. You can check this from the dataset info section mentioned above. You can find all supported regions [here](https://cloud.google.com/bigquery/docs/locations#regional-locations)
 
 #### GOOGLE_APPLICATION_CREDENTIALS
-The name of the JSON file that contains the service account credentials. To create a new service account when setting up the project, visit our [Installation guide](./INSTALLATION.md).
+The name of the JSON file that contains the service account credentials. To create a new service account when setting up the project, visit our [Installation guide](./INSTALLATION.md). The service account must have BigQuery admin permissions.
 Based on your file name, here's what your value can look like: `gcp-service-account-filename.json`
 
 ### AWS RDS settings

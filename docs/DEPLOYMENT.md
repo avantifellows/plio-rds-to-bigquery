@@ -76,7 +76,8 @@ cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.
     10. GOOGLE_APPLICATION_CREDENTIALS
     11. S3_BUCKET_NAME
     12. S3_DIRECTORY
-12. Try testing the lambda function by switching to the "Test" tab and click on "Test" button. If everything goes well, you should see a green box with 200 statusCode.
+12. Go the the "General Settings" tab and increase the timeout value to 5 minutes. This is because the lambda function will take some time to push all the data to BigQuery.
+13. Try testing the lambda function by switching to the "Test" tab and click on "Test" button. If everything goes well, you should see a green box with 200 statusCode.
 
 ### Set up Cloudwatch Rule to trigger lambda
 1.  Go to `Cloudwatch` dashboard and navigate to `Events > Rules` tab.
