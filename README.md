@@ -9,7 +9,7 @@
 This repository is responsible for transferring data from AWS RDS to BigQuery datasets.
 
 ## Installation & Deployment
-Since this project is hosted completely on Cloud, please visit our [Deployment guideline](docs/DEPLOYMENT.md) for both setup and deploy.
+Since this project is hosted completely on Cloud, please visit our [Deployment guideline](docs/DEPLOYMENT.md) for both setup and deployment.
 
 ## Contributing
 - [Pre-commit](docs/PRE-COMMIT.md)
