@@ -25,6 +25,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 1. Visit the S3 dashboard.
 2. Create a bucket where you want the CSV files to be stored. These files will contain the data from your RDS database.
 3. Create another bucket where you want to keep the logs of the data pipeline.
+4. For both the buckets, go with default permissions i.e., `Block all public access`.
 
 ### Set up Data Pipeline
 1. Make a copy of the `data-pipeline-template.json` file. It is at the root folder of this project.
@@ -46,7 +47,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 3. In the BigQuery dashboard, you will see the project in the sidebar. There won't be any datasets yet.
 4. You don't need to create any datasets. They will be automagically created by the Lambda function below. :wink:
 5. Next, create a service account for your GCP account. Grant the BigQuery admin permission to the service account.
-6. Download the service account credentials file and rename it to `gcp-service-account.json`.
+6. Download the service account credentials file and rename it to `gcp-service-account.json`. The file content format should match the format of the SAMPLE JSON file - [gcp-service-account.sample.json](../gcp-service-account.sample.json).
 7. Copy the GCP service account credentials file to the project folder.
 ### Set up Lambda
 1. Go to your AWS dashboard and from services, select `Lambda`.
