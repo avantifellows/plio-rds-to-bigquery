@@ -28,7 +28,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 4. For both the buckets, go with default permissions i.e., `Block all public access`.
 
 ### Set up Data Pipeline
-1. Make a copy of the `data-pipeline-template.json` file. It is at the root folder of this project.
+1. Make a copy of the `data-pipeline-template.json` file. It is located at the root folder of this project.
    1. Update the values at the bottom of the file for the RDS and S3.
    2. Make sure to update the value of `pipelineLogUri` that's defined somewhere inside the JSON. This should contain the URI for the S3 bucket where you want to store Data Pipeline Logs.
    3. Read about all these values in our [Data Pipeline guide](DATA-PIPELINE.md).
