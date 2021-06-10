@@ -27,7 +27,7 @@ def lambda_handler(event, context):
 
     # process tables in public schema
     table_names = get_tables_in_schema(public_mode=True)
-    process_tables(client, dataset_ref, 'public', table_names)
+    process_tables(client, dataset_ref, "public", table_names)
 
     # process tables in organization schema
     schema = os.getenv("DB_SCHEMA_NAME", None)
@@ -120,14 +120,14 @@ def get_tables_in_schema(public_mode=True):
         "session",
         "session_answer",
         "tag",
-        "video"
+        "video",
     ]
 
 
 def process_tables(client, dataset_ref, schema, table_names):
     """Processes tables in the specified schema."""
     bucket_name = os.getenv("S3_BUCKET_NAME")
-    s3_directory = os.getenv("S3_DIRECTORY", '')
+    s3_directory = os.getenv("S3_DIRECTORY", "")
     project_id = os.getenv("BIGQUERY_PROJECT_ID")
     dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     s3 = boto3.client("s3")
