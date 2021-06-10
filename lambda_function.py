@@ -1,3 +1,6 @@
+# This file contains the main handler function that will be run by the AWS Lambda upon trigger.
+# It copies data from an S3 folder and put them into a BigQuery dataset.
+
 import json
 import boto3
 import os
@@ -15,8 +18,8 @@ def lambda_handler(event, context):
 
     client = bigquery.Client(project=project_id, location=bigquery_region)
 
+    dataset_ref = client.dataset(dataset_id)
     try:
-        dataset_ref = client.dataset(dataset_id)
         client.get_dataset(dataset_ref)
     except NotFound:
         # create dataset if NotFound error
@@ -92,7 +95,11 @@ def map_to_big_query_data_type(column_type):
 
 
 def get_tables_in_schema(public_mode=True):
-    """List of organization tables that need to be processed."""
+    """
+    List of organization tables that need to be processed.
+
+    public_mode: Boolean field. If true, it returns tables in the public schema. Otherwise returns tables in the tenant schema.
+    """
     if public_mode:
         return [
             "organization",
@@ -116,6 +123,7 @@ def get_tables_in_schema(public_mode=True):
         "video"
     ]
 
+
 def process_tables(client, dataset_ref, schema, table_names):
     """Processes tables in the specified schema."""
     bucket_name = os.getenv("S3_BUCKET_NAME")
@@ -125,14 +133,14 @@ def process_tables(client, dataset_ref, schema, table_names):
     s3 = boto3.client("s3")
 
     for table_name in table_names:
+        table_ref = dataset_ref.table(table_name)
         try:
-            table_ref = dataset_ref.table(table_name)
-            table = client.get_table(table_ref)
+            client.get_table(table_ref)
         except NotFound:
             # create table if NotFound error
             table_id = f"{project_id}.{dataset_id}.{table_name}"
             table = bigquery.Table(table_id, get_table_schema(table_name, schema))
-            table = client.create_table(table)
+            client.create_table(table)
 
         # download s3 file into lambda /tmp/ directory to upload to BigQuery
         file = s3_directory + table_name + ".csv"
