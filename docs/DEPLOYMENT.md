@@ -29,7 +29,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 ### Set up Data Pipeline
 1. Make a copy of the `data-pipeline-template.json` file. It is at the root folder of this project.
    1. Update the values at the bottom of the file for the RDS and S3.
-   2. Make sure to update the value of `pipelineLogUri` that's defined somewhere inside the JSON.
+   2. Make sure to update the value of `pipelineLogUri` that's defined somewhere inside the JSON. This should contain the URI for the S3 bucket where you want to store Data Pipeline Logs.
    3. Read about all these values in our [Data Pipeline guide](DATA-PIPELINE.md).
 2. Visit the data pipeline dashboard from your AWS console.
 3. Click on `Create new` data pipeline.
@@ -56,6 +56,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 5. Click on `Create function` button at the bottom. You will see the function in your lambda function list.
 6. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
 ```sh
+mkdir -p package/
 cd package/ &&  zip -r ../plio-rds-to-bigquery.zip .
 cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.json
 ```
