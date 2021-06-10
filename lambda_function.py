@@ -1,7 +1,6 @@
 # This file contains the main handler function that will be run by the AWS Lambda upon trigger.
 # It copies data from an S3 folder and put them into a BigQuery dataset.
 
-import json
 import boto3
 import os
 import psycopg2
