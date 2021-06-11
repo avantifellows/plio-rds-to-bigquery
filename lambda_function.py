@@ -97,7 +97,7 @@ def get_tables_in_schema(public_mode=True):
     """
     List of organization tables that need to be processed.
 
-    public_mode: Boolean field. If true, it returns tables in the public schema. Otherwise returns tables in the tenant schema.
+    public_mode: Boolean field. If true, it returns tables that contain generic information from `public` schema. If false, it returns tenant specific tables from tenant schema.
     """
     if public_mode:
         return [
