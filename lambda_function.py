@@ -1,4 +1,6 @@
-import json
+# This file contains the main handler function that will be run by the AWS Lambda upon trigger.
+# It copies data from an S3 folder and put them into a BigQuery dataset.
+
 import boto3
 import os
 import psycopg2
@@ -9,26 +11,28 @@ from google.cloud.exceptions import NotFound
 def lambda_handler(event, context):
     """The main handler function. """
     # load env variables
-    project_id = os.getenv("PROJECT_ID")
-    dataset_id = os.getenv("DATASET_ID")
+    project_id = os.getenv("BIGQUERY_PROJECT_ID")
+    dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     bigquery_region = os.getenv("BIGQUERY_REGION")
 
     client = bigquery.Client(project=project_id, location=bigquery_region)
 
+    dataset_ref = client.dataset(dataset_id)
     try:
-        dataset_ref = client.dataset(dataset_id)
         client.get_dataset(dataset_ref)
     except NotFound:
         # create dataset if NotFound error
         client.create_dataset(dataset_id)
 
     # process tables in public schema
-    process_tables_in_schema(client, dataset_ref, 'public')
+    table_names = get_tables_in_schema(public_mode=True)
+    process_tables(client, dataset_ref, "public", table_names)
 
     # process tables in organization schema
     schema = os.getenv("DB_SCHEMA_NAME", None)
+    table_names = get_tables_in_schema(public_mode=False)
     if schema is not None:
-        process_tables_in_schema(client, dataset_ref, schema)
+        process_tables(client, dataset_ref, schema, table_names)
 
     return {"statusCode": 200, "body": "All done!"}
 
@@ -89,9 +93,13 @@ def map_to_big_query_data_type(column_type):
         return "TIME"
 
 
-def get_tables_in_schema(schema='public'):
-    """List of organization tables that need to be processed."""
-    if schema == 'public':
+def get_tables_in_schema(public_mode=True):
+    """
+    List of organization tables that need to be processed.
+
+    public_mode: Boolean field. If true, it returns tables that contain generic information from `public` schema. If false, it returns tenant specific tables from tenant schema.
+    """
+    if public_mode:
         return [
             "organization",
             "organization_user",
@@ -111,29 +119,27 @@ def get_tables_in_schema(schema='public'):
         "session",
         "session_answer",
         "tag",
-        "video"
+        "video",
     ]
 
-def process_tables_in_schema(client, dataset_ref, schema):
+
+def process_tables(client, dataset_ref, schema, table_names):
     """Processes tables in the specified schema."""
-    bucket_name = os.getenv("BUCKET_NAME")
-    s3_directory = os.getenv("S3_DIRECTORY")
-    project_id = os.getenv("PROJECT_ID")
-    dataset_id = os.getenv("DATASET_ID")
+    bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_directory = os.getenv("S3_DIRECTORY", "")
+    project_id = os.getenv("BIGQUERY_PROJECT_ID")
+    dataset_id = os.getenv("BIGQUERY_DATASET_ID")
     s3 = boto3.client("s3")
 
-    # get tables in public schema
-    table_names = get_tables_in_schema(schema)
-
     for table_name in table_names:
+        table_ref = dataset_ref.table(table_name)
         try:
-            table_ref = dataset_ref.table(table_name)
-            table = client.get_table(table_ref)
+            client.get_table(table_ref)
         except NotFound:
             # create table if NotFound error
             table_id = f"{project_id}.{dataset_id}.{table_name}"
             table = bigquery.Table(table_id, get_table_schema(table_name, schema))
-            table = client.create_table(table)
+            client.create_table(table)
 
         # download s3 file into lambda /tmp/ directory to upload to BigQuery
         file = s3_directory + table_name + ".csv"
