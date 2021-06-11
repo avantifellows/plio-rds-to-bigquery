@@ -54,19 +54,24 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 2. Click on `Create function` button.
 3. Enter the name of your function. Can be like `plio_s3_to_bigquery_public_schema`.
 4. Select `Python 3.8` in the Runtime option.
-5. Click on `Create function` button at the bottom. You will see the function in your lambda function list.
-6. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
-```sh
-pip3 install --target ./package google-cloud-bigquery
-cp -R psycopg2 package/psycopg2
-cd package/ &&  zip -r ../plio-rds-to-bigquery.zip .
-cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.json
-```
-7. It will create a zip file with name `plio-rds-to-bigquery.zip` in your folder.
-8. Navigate to the `Code source` section. Click on `Upload from` dropdown and select `.zip file` option.
-9. Upload the zip file. It may take some time to upload.
-10. Once uploaded, switch to the `Configuration` tab and go to `Environment variables` section.
-11. Add the following environment variables. More details about these variables can be found at [ENV guide](ENV.md).
+5. In the execution role section, select `Create a new role from AWS policy templates` option.
+   1. Enter the role name.
+   2. In the policy templates, select the following options:
+      1. Amazon S3 object read-only permissions
+      2. Basic Lambda@Edge permissions (for CloudFront trigger)
+6. Click on `Create function` button at the bottom. You will see the function in your lambda function list.
+7. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
+    ```sh
+    pip3 install --target ./package google-cloud-bigquery
+    cp -R psycopg2 package/psycopg2
+    cd package/ &&  zip -r ../plio-rds-to-bigquery.zip .
+    cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.json
+    ```
+8. It will create a zip file with name `plio-rds-to-bigquery.zip` in your folder.
+9. Navigate to the `Code source` section. Click on `Upload from` dropdown and select `.zip file` option.
+10. Upload the zip file. It may take some time to upload.
+11. Once uploaded, switch to the `Configuration` tab and go to `Environment variables` section.
+12. Add the following environment variables. More details about these variables can be found at [ENV guide](ENV.md).
     1.  BIGQUERY_DATASET_ID
     2.  BIGQUERY_PROJECT_ID
     3.  BIGQUERY_REGION
@@ -79,8 +84,8 @@ cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.
     10. GOOGLE_APPLICATION_CREDENTIALS
     11. S3_BUCKET_NAME
     12. S3_DIRECTORY
-12. Go the the `General Settings` tab and increase the timeout value to 5 minutes. This is because the lambda function will take some time to push all the data to BigQuery.
-13. Try testing the lambda function by switching to the `Test` tab and clicking on the `Test` button. If everything goes well, you should see a green box with 200 statusCode.
+13. Go the the `General Settings` tab and increase the timeout value to 5 minutes. This is because the lambda function will take some time to push all the data to BigQuery.
+14. Try testing the lambda function by switching to the `Test` tab and clicking on the `Test` button. If everything goes well, you should see a green box with 200 statusCode.
 
 ### Set up Cloudwatch Rule to trigger lambda
 1.  Go to `Cloudwatch` dashboard and navigate to `Events > Rules` tab.
