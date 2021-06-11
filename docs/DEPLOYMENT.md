@@ -49,29 +49,32 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 5. Next, create a service account for your GCP account. Grant the BigQuery admin permission to the service account.
 6. Download the service account credentials file and rename it to `gcp-service-account.json`. The file content format should match the format of the SAMPLE JSON file - [gcp-service-account.sample.json](../gcp-service-account.sample.json).
 7. Copy the GCP service account credentials file to the project folder.
+
 ### Set up Lambda
 1. Go to your AWS dashboard and from services, select `Lambda`.
 2. Click on `Create function` button.
 3. Enter the name of your function. Can be like `plio_s3_to_bigquery_public_schema`.
 4. Select `Python 3.8` in the Runtime option.
-5. In the execution role section, select `Create a new role from AWS policy templates` option.
-   1. Enter the role name.
-   2. In the policy templates, select the following options:
-      1. Amazon S3 object read-only permissions
-      2. Basic Lambda@Edge permissions (for CloudFront trigger)
+5. In the execution role section, select `Create a new role with basic Lambda permissions` option.
 6. Click on `Create function` button at the bottom. You will see the function in your lambda function list.
-7. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
+7. Once Lambda is created, update the execution role permissions.
+   1. Go to the `Configuration` tab inside lambda function dashboard.
+   2. Switch to `Permissions` tab in the left sidebar.
+   3. You will see the Execution role. Click on the role name and it will take you to the IAM page for the role.
+   4. Assign `S3 read permissions` to the role.
+   5. Come back to the Lambda dashboard.
+8. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
     ```sh
     pip3 install --target ./package google-cloud-bigquery
     cp -R psycopg2 package/psycopg2
     cd package/ &&  zip -r ../plio-rds-to-bigquery.zip .
     cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.json
     ```
-8. It will create a zip file with name `plio-rds-to-bigquery.zip` in your folder.
-9. Navigate to the `Code source` section. Click on `Upload from` dropdown and select `.zip file` option.
-10. Upload the zip file. It may take some time to upload.
-11. Once uploaded, switch to the `Configuration` tab and go to `Environment variables` section.
-12. Add the following environment variables. More details about these variables can be found at [ENV guide](ENV.md).
+9.  It will create a zip file with name `plio-rds-to-bigquery.zip` in your folder.
+10. Navigate to the `Code source` section. Click on `Upload from` dropdown and select `.zip file` option.
+11. Upload the zip file. It may take some time to upload.
+12. Once uploaded, switch to the `Configuration` tab and go to `Environment variables` section.
+13. Add the following environment variables. More details about these variables can be found at [ENV guide](ENV.md).
     1.  BIGQUERY_DATASET_ID
     2.  BIGQUERY_PROJECT_ID
     3.  BIGQUERY_REGION
@@ -84,8 +87,8 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
     10. GOOGLE_APPLICATION_CREDENTIALS
     11. S3_BUCKET_NAME
     12. S3_DIRECTORY
-13. Go the the `General Settings` tab and increase the timeout value to 5 minutes. This is because the lambda function will take some time to push all the data to BigQuery.
-14. Try testing the lambda function by switching to the `Test` tab and clicking on the `Test` button. If everything goes well, you should see a green box with 200 statusCode.
+14. Go the the `General Settings` tab and increase the timeout value to 5 minutes. This is because the lambda function will take some time to push all the data to BigQuery.
+15. Try testing the lambda function by switching to the `Test` tab and clicking on the `Test` button. If everything goes well, you should see a green box with 200 statusCode.
 
 ### Set up Cloudwatch Rule to trigger lambda
 1.  Go to `Cloudwatch` dashboard and navigate to `Events > Rules` tab.
