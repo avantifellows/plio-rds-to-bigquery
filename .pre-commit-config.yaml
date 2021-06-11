@@ -17,6 +17,7 @@ repos:
     rev: '3.9.0'
     hooks:
     -   id: flake8
+        exclude: ^psycopg2/
         args:
         # these are errors that will be ignored by flake8
         # check out their meaning here
