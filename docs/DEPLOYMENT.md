@@ -45,7 +45,7 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 1. Visit the [BigQuery dashboard](https://console.cloud.google.com/bigquery) in your Google Cloud Platform account.
 2. You can either select an existing project or create a new one within your GCP account.
 3. In the BigQuery dashboard, you will see the project in the sidebar. There won't be any datasets yet.
-4. You don't need to create any datasets. They will be automagically created by the Lambda function below. :wink:
+4. You don't need to create any datasets. They will be automatically created by the Lambda function below. :wink:
 5. Next, create a service account for your GCP account. Grant the BigQuery admin permission to the service account.
 6. Download the service account credentials file and rename it to `gcp-service-account.json`. The file content format should match the format of the SAMPLE JSON file - [gcp-service-account.sample.json](../gcp-service-account.sample.json).
 7. Copy the GCP service account credentials file to the project folder.

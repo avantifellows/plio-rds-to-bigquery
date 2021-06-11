@@ -1,5 +1,5 @@
 ## AWS Data Pipeline
-Plio RDS to BigQuery uses AWS Data Pipeline to extract data from RDS and put it in S3 bucket as CSV files.
+Plio RDS to BigQuery uses AWS Data Pipeline to extract data from RDS and put it in an S3 bucket as CSV files.
 
 A new Data Pipeline has to be created for every database schema, including `public`. A new Data Pipeline can be very easily created using the `data-pipeline-template.json`.
 
@@ -7,11 +7,11 @@ Here are the simple steps to set it up:
 1. Make a copy of the `data-pipeline-template.json` file. It is located at the root folder of this project.
    1. Update the values at the bottom of the file for the RDS and S3.
    2. Make sure to update the value of `pipelineLogUri` that's defined somewhere inside the JSON. This should contain the URI for the S3 bucket where you want to store Data Pipeline Logs.
-2. Use this file within the "Create new Data Pipeline" form by `Import a definition` option and then `Load local file`.
+2. Use this file within the `Create new Data Pipeline` form by selecting the `Import a definition` option and then `Load local file`.
 
-Here are all the configurations you need to modify within your copy of data-pipeline-template.json before uploading.
+Here are all the configurations you need to modify within your copy of `data-pipeline-template.json` before uploading.
 
-**Note:** All variables in Data Pipeline has to start with `my` prefix. Do not update any variable name, only update the corresponding values.
+**Note:** All variables in Data Pipeline have to start with `my` prefix. Do not update any variable name, only update the corresponding values.
 
 #### myEC2InstanceType
 The type of EC2 instance where the data extraction queries and CSV generation will happen. Default is `t2.micro`. It should be sufficient for Plio setup, however, if you want to change it to a higher/lower configuration, please feel free.
