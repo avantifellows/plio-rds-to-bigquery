@@ -57,10 +57,8 @@ Here's a high level flow diagram of how data is transferred from RDS to BigQuery
 5. Click on `Create function` button at the bottom. You will see the function in your lambda function list.
 6. Next run the following commands to create a zip file that includes the python dependencies, lambda function and the GCP service account credentials:
 ```sh
-mkdir -p package/
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"
-pip3 install --target ./package psycopg2 google-cloud-bigquery
+pip3 install --target ./package google-cloud-bigquery
+cp -R psycopg2 package/psycopg2
 cd package/ &&  zip -r ../plio-rds-to-bigquery.zip .
 cd .. && zip -g plio-rds-to-bigquery.zip lambda_function.py gcp-service-account.json
 ```
