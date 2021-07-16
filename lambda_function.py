@@ -3,7 +3,9 @@
 
 import boto3
 import os
+import glob
 import psycopg2
+import csv
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
@@ -24,18 +26,66 @@ def lambda_handler(event, context):
         # create dataset if NotFound error
         client.create_dataset(dataset_id)
 
-    # process tables in public schema
-    table_names = get_tables_in_schema(public_mode=True)
-    process_tables(client, dataset_ref, "public", table_names)
-
-    # process tables in organization schema
+    # get list of tables in public schema and organization schema
+    public_table_names = get_tables_in_schema(public_mode=True)
     schema = os.getenv("DB_SCHEMA_NAME", None)
-    table_names = get_tables_in_schema(public_mode=False)
+    schema_table_names = get_tables_in_schema(public_mode=False)
+    
+    # check if the columns of all tables are consistent
+    # across the s3 tables and bigquery tables
+    are_public_columns_consistent = verify_total_columns(
+        client, dataset_ref, "public", public_table_names
+    )
+    are_schema_columns_consistent = verify_total_columns(
+        client, dataset_ref, schema, schema_table_names
+    )
+
+    # if the columns are not consistent, delete the dataset and create again
+    if not are_public_columns_consistent or not are_schema_columns_consistent:
+        client.delete_dataset(dataset_id, delete_contents=True)
+        client.create_dataset(dataset_id)
+
+    # process tables in public and organization schema
+    process_tables(client, dataset_ref, "public", public_table_names)
     if schema is not None:
-        process_tables(client, dataset_ref, schema, table_names)
+        process_tables(client, dataset_ref, schema, schema_table_names)
 
     return {"statusCode": 200, "body": "All done!"}
 
+
+def verify_total_columns(client, dataset_ref, schema, table_names):
+    """Verifies if the columns in s3 tables and bigQuery tables match"""
+    bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_directory = os.getenv("S3_DIRECTORY", "")
+    s3 = boto3.client("s3")
+
+    if schema is None:
+        return True
+    
+    for table_name in table_names:
+        # iterating over tables
+        table_ref = dataset_ref.table(table_name)
+        try:
+            # table found in bigQuery
+            bigquery_table = client.get_table(table_ref)
+        except NotFound:
+            # table not found in bigQuery
+            return False
+        
+        # download s3 file into lambda /tmp/ directory
+        file = s3_directory + table_name + ".csv"
+        local_file_name = "/tmp/" + table_name + ".csv"
+        s3.download_file(bucket_name, file, local_file_name)
+        
+        # calculate total columns of the s3 table
+        reader = csv.reader(open(local_file_name,'r'), delimiter=",")
+        list_reader = list(reader)
+        if len(list_reader) != 0:
+            s3_table_cols = len(list_reader[0])
+            # compare the number of columns in both the tables
+            if s3_table_cols != len(bigquery_table.schema):
+                return False
+    return True
 
 def get_table_schema(table_name, schema):
     """Returns the schema for the specified database table as per BigQuery table schema format."""
